@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Randomized Name List</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+    </style>
+</head>
+<body class="p-5">
+    <h1 class="text-3xl font-bold text-blue-700 mb-6 rounded-md">Your Randomized Name List</h1>
+    <ul id="nameList" class="space-y-2">
+        <!-- Names will be inserted here by JavaScript -->
+    </ul>
+
+    <script>
+        // --- YOUR LIST OF NAMES WITH ASSOCIATED URLs ---
+        const originalNames = [
+            { name: "John Doe", url: "https://www.example.com/john-doe" },
+            { name: "Jane Smith", url: "https://www.example.com/jane-smith" },
+            { name: "Peter Jones", url: "https://www.example.com/peter-jones" },
+            { name: "Sarah Brown", url: "https://www.example.com/sarah-brown" },
+            { name: "Michael Green", url: "https://www.example.com/michael-green" },
+            { name: "Emily White", url: "https://www.example.com/emily-white" },
+            { name: "Chris Davis", url: "https://www.example.com/chris-davis" },
+            { name: "Anna Wilson", url: "https://www.example.com/anna-wilson" },
+            { name: "David Miller", url: "https://www.example.com/david-miller" },
+            { name: "Laura Johnson", url: "https://www.example.com/laura-johnson" }
+        ];
+        // ---------------------------------------------
+
+        /**
+         * Shuffles an array using the Fisher-Yates algorithm.
+         * @param {Array} array - The array to shuffle.
+         * @returns {Array} The shuffled array.
+         */
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]]; // Swap elements
+            }
+            return array;
+        }
+
+        // Check if a randomized list already exists in session storage
+        let displayedNames = sessionStorage.getItem('randomizedNames');
+
+        if (displayedNames) {
+            // If exists, parse it back to an array
+            displayedNames = JSON.parse(displayedNames);
+        } else {
+            // If not, shuffle the original list and store it
+            // Create a deep copy to ensure original objects are not mutated
+            displayedNames = shuffleArray(JSON.parse(JSON.stringify(originalNames)));
+            sessionStorage.setItem('randomizedNames', JSON.stringify(displayedNames));
+        }
+
+        // Display the names on the page
+        const nameListElement = document.getElementById('nameList');
+        displayedNames.forEach(item => {
+            const listItem = document.createElement('li');
+            listItem.classList.add('bg-white', 'p-3', 'rounded-lg', 'shadow-md'); // Tailwind classes for styling list items
+
+            const anchor = document.createElement('a');
+            anchor.href = item.url;
+            anchor.textContent = item.name;
+            anchor.target = "_blank"; // Open link in a new tab
+            anchor.classList.add('text-blue-600', 'hover:text-blue-800', 'font-medium', 'hover:underline'); // Tailwind classes for link styling
+
+            listItem.appendChild(anchor);
+            nameListElement.appendChild(listItem);
+        });
+    </script>
+</body>
+</html>
