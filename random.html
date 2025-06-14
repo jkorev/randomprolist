@@ -4,35 +4,133 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Randomized Name List</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS CDN - used for general utility classes not overridden by custom styles -->
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
+        /* Define the custom "Rise" font from Thumbtack's CDN */
+        @font-face {
+            font-family: 'Rise';
+            src: url(https://fonts.thumbtack.com/thumbtack-rise/ThumbtackRiseVF.woff2) format("woff2-variations"),
+                 url("https://fonts.thumbtack.com/thumbtack-rise/ThumbtackRiseVF.woff") format("woff-variations");
+            font-weight: 100 900; /* Define the available weight range */
+        }
+
+        /* Apply Thumbtack's core body styles */
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f4f4f4;
-            color: #333;
+            min-width: 320px;
+            overflow-x: hidden;
+            -moz-osx-font-smoothing: grayscale;
+            -webkit-font-smoothing: antialiased;
+            font-family: 'Rise', Avenir, Helvetica, Arial, sans-serif; /* Prioritize Rise, fallback to Avenir and generic sans-serif */
+            color: #2f3033; /* Thumbtack's primary dark text color */
+            background-color: #f8f8f8; /* A very light grey, common on Thumbtack's background sections */
+        }
+
+        /* Base link styling */
+        a {
+            color: inherit; /* Inherit color unless explicitly set */
+            text-decoration: none; /* No underline by default */
+        }
+
+        /* Custom styling for the main heading (H1) to match Thumbtack's design */
+        h1 {
+            font-size: 40px;
+            line-height: 1.1;
+            font-weight: 900; /* Changed to 900 for extra bold */
+            color: #2f3033; /* Primary text color */
+            margin-bottom: 8px; /* Adjusted margin to accommodate the new subtitle */
+        }
+
+        @media screen and (max-width: 1200px) {
+            h1 {
+                font-size: 34px;
+            }
+        }
+
+        @media screen and (max-width: 1023px) {
+            h1 {
+                font-size: 28px;
+                line-height: 1.14;
+            }
+        }
+
+        /* Styling for the small subtitle text */
+        .subtitle-text {
+            font-size: 14px; /* Smaller font size */
+            font-weight: 400; /* Regular weight */
+            line-height: 1.5;
+            color: #676d73; /* Lighter grey for secondary text */
+            margin-bottom: 32px; /* Space below the subtitle before the list */
+            text-align: center; /* Center the text */
+        }
+
+        /* Custom styling for list items (name cards) to mimic Thumbtack's ".post" or ".offers__card" */
+        .name-card {
+            position: relative;
+            background-color: #fff; /* White background for the card */
+            border: 1px solid #e9eced; /* Thumbtack's subtle border color */
+            border-radius: 4px; /* Thumbtack's standard border-radius */
+            /* Reduced padding to make the boxes smaller and reduce whitespace */
+            padding: 10px 15px; /* Vertical padding 10px, horizontal padding 15px */
+            /* Reduced margin-bottom to lessen space between cards */
+            margin-bottom: 12px; /* Spacing between cards */
+            transition: box-shadow .5s ease; /* Smooth transition for shadow on hover */
+            box-shadow: 0 1px 2px rgba(0,0,0,0.08); /* Initial subtle shadow */
+        }
+
+        .name-card:hover {
+            box-shadow: 0 2px 4px 0 rgba(0,0,0,.15); /* More pronounced shadow on hover */
+        }
+
+        /* Styling for the links within the name cards */
+        .name-link {
+            display: block; /* Make the link fill the whole list item area */
+            /* Adjusted font size for consistency with smaller box */
+            font-size: 13px; /* Text size for the name */
+            font-weight: 700; /* Bold font for the name */
+            line-height: 1.5;
+            color: #009fd9; /* Thumbtack's primary blue for links */
+            transition: color .5s ease; /* Smooth transition for color on hover */
+        }
+
+        .name-link:hover {
+            color: #007fad; /* Darker blue on hover */
+        }
+
+        /* Remove last item's bottom margin */
+        #nameList > li:last-child {
+            margin-bottom: 0;
         }
     </style>
 </head>
-<body class="p-5">
-    <h1 class="text-3xl font-bold text-blue-700 mb-6 rounded-md">Your Randomized Name List</h1>
-    <ul id="nameList" class="space-y-2">
-        <!-- Names will be inserted here by JavaScript -->
-    </ul>
+<body class="min-h-screen flex items-center justify-center p-4">
+    <!-- Main content container, centered and with a max-width for better readability -->
+    <div class="bg-white rounded-lg shadow-xl p-6 md:p-8 w-full max-w-2xl">
+        <!-- Page Title -->
+        <h1 class="text-center">
+            Your Personalized Name List
+        </h1>
+        <!-- Small section under the title -->
+        <p class="subtitle-text">
+            Below is a randomized list of names, perfect for drawing or assigning tasks.
+            Refresh the page to randomize the order again!
+        </p>
+
+        <!-- List of names -->
+        <ul id="nameList">
+            <!-- Names will be inserted here by JavaScript -->
+        </ul>
+    </div>
 
     <script>
         // --- YOUR LIST OF NAMES WITH ASSOCIATED URLs ---
         const originalNames = [
-            { name: "John Doe", url: "https://www.example.com/john-doe" },
-            { name: "Jane Smith", url: "https://www.example.com/jane-smith" },
-            { name: "Peter Jones", url: "https://www.example.com/peter-jones" },
-            { name: "Sarah Brown", url: "https://www.example.com/sarah-brown" },
-            { name: "Michael Green", url: "https://www.example.com/michael-green" },
-            { name: "Emily White", url: "https://www.example.com/emily-white" },
-            { name: "Chris Davis", url: "https://www.example.com/chris-davis" },
-            { name: "Anna Wilson", url: "https://www.example.com/anna-wilson" },
-            { name: "David Miller", url: "https://www.example.com/david-miller" },
-            { name: "Laura Johnson", url: "https://www.example.com/laura-johnson" }
+{name: "Violin Lessons", url: "https://www.thumbtack.com//md/parkville/violin-lessons/violin-lessons/service/131252964076602374?utm_medium=partnership&utm_source=midea"},
+{name: "Mark Paragua", url: "https://www.thumbtack.com//ny/elmhurst/chess-lessons/mark-paragua/service/334106837981831374?utm_medium=partnership&utm_source=midea"},
+{name: "Tim O'Connell Images", url: "https://www.thumbtack.com//nc/cary/boudoir-photography/tim-oconnell-images/service/320707865166159941?utm_medium=partnership&utm_source=midea"},
+{name: "Mack Chimney service", url: "https://www.thumbtack.com//md/district-heights/furnace-repair/mack-chimney-service/service/278865051501347858?utm_medium=partnership&utm_source=midea"},
+{name: "DPG Family Law (offices in Lincolnshire and Hof...", url: "https://www.thumbtack.com//il/lincolnshire/divorce-attorney/dpg-family-law-offices-in-lincolnshire-hoffman-estates/service/299950707666387077?utm_medium=partnership&utm_source=midea"},
+{name: "Paul Howard Burns, Piano Instruction and Coaching", url: "https://www.thumbtack.com//mi/auburn-hills/piano-lessons-for-kids/paul-howard-burns-piano-instruction-coaching/service/84740360597324886?utm_medium=partnership&utm_source=midea"}
         ];
         // ---------------------------------------------
 
@@ -66,13 +164,15 @@
         const nameListElement = document.getElementById('nameList');
         displayedNames.forEach(item => {
             const listItem = document.createElement('li');
-            listItem.classList.add('bg-white', 'p-3', 'rounded-lg', 'shadow-md'); // Tailwind classes for styling list items
+            // Apply the custom name-card class
+            listItem.classList.add('name-card');
 
             const anchor = document.createElement('a');
             anchor.href = item.url;
             anchor.textContent = item.name;
             anchor.target = "_blank"; // Open link in a new tab
-            anchor.classList.add('text-blue-600', 'hover:text-blue-800', 'font-medium', 'hover:underline'); // Tailwind classes for link styling
+            // Apply the custom name-link class
+            anchor.classList.add('name-link');
 
             listItem.appendChild(anchor);
             nameListElement.appendChild(listItem);
